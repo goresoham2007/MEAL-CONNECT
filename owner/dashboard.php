@@ -14,6 +14,11 @@ $activeStudents = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(DISTINCT 
 $totalRevenue = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COALESCE(SUM(amount),0) s FROM subscriptions WHERE mess_id IN ($messIdsCsv)"))['s'];
 $avgRating = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COALESCE(AVG(rating),0) a FROM mess WHERE owner_id=$ownerId"))['a'];
 $enquiryCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM enquiries WHERE mess_id IN ($messIdsCsv)"))['c'];
+
+// Per-mess enquiry counts, so each listing below can link straight to its enquiries.
+$enquiryCounts = [];
+$ecRes = mysqli_query($conn, "SELECT mess_id, COUNT(*) c FROM enquiries WHERE mess_id IN ($messIdsCsv) GROUP BY mess_id");
+while ($ec = mysqli_fetch_assoc($ecRes)) $enquiryCounts[$ec['mess_id']] = (int)$ec['c'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +58,7 @@ $enquiryCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) c FROM e
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <a href="manage_mess.php?id=<?= (int)$m['id'] ?>" class="btn btn-sm btn-outline">Manage Students</a>
+        <a href="manage_mess.php?id=<?= (int)$m['id'] ?>&tab=enquiries" class="btn btn-sm btn-outline">Enquiries<?= !empty($enquiryCounts[$m['id']]) ? ' (' . $enquiryCounts[$m['id']] . ')' : '' ?></a>
         <a href="../student/mess_detail.php?id=<?= (int)$m['id'] ?>" class="btn btn-sm btn-dark">Preview</a>
       </div>
     </div>

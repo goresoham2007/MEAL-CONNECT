@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         $ownerId = $_SESSION['owner_id'];
         $ownerName = $_SESSION['owner_name'];
-        mysqli_stmt_bind_param($stmt, 'isssssddssisssi',
+        mysqli_stmt_bind_param($stmt, 'isssssddssissssi',
             $ownerId,$name,$type,$veg_type,$location_area,$address,$latitude,$longitude,$description,$cover_image,$price,$tags,$facilities,$ownerName,$owner_contact,$budget);
         mysqli_stmt_execute($stmt);
         $messId = mysqli_insert_id($conn);
